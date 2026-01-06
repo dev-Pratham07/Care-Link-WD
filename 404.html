@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Page Not Found | Care Link</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .error-page {
+      display: flex;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      background-color: hsl(var(--muted));
+      padding: 2rem;
+    }
+    .error-content {
+      text-align: center;
+      animation: fadeIn 0.5s ease-out;
+    }
+    .error-code {
+      font-size: 8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.6));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 768px) {
+      .error-code {
+        font-size: 4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="error-page">
+    <div class="error-content">
+      <div class="error-code">404</div>
+      <h1 class="text-4xl font-bold mb-4">Oops! Page Not Found</h1>
+      <p class="text-xl text-muted-foreground mb-8">
+        The page you're looking for doesn't exist or has been moved.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="index.html" class="btn btn-primary btn-lg">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span>Return Home</span>
+        </a>
+        <a href="diagnostics.html" class="btn btn-secondary btn-lg">
+          <span>Start Diagnosis</span>
+        </a>
+      </div>
+      <div class="mt-8">
+        <p class="text-sm text-muted-foreground">
+          Need help? <a href="mental-health.html" class="text-primary underline">Contact Support</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
