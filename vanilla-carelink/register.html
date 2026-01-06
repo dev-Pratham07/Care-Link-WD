@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account - Care Link</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Supabase Client Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .register-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, hsl(var(--primary) / 0.05) 0%, hsl(var(--secondary) / 0.05) 100%);
+      position: relative;
+      overflow: hidden;
+      padding: 2rem 0;
+    }
+
+    .register-container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, hsl(var(--primary) / 0.1) 0%, transparent 70%);
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .register-container::after {
+      content:  '';
+      position:  absolute;
+      bottom: -50%;
+      left: -50%;
+      width:  100%;
+      height: 100%;
+      background: radial-gradient(circle, hsl(var(--secondary) / 0.08) 0%, transparent 70%);
+      animation: float 25s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(30px, 30px) rotate(5deg); }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform:  translateY(0);
+      }
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .animate-spin {
+      animation:  spin 1s linear infinite;
+    }
+
+    .register-card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width:  500px;
+      margin:  2rem;
+    }
+
+    .register-header {
+      text-align: center;
+      margin-bottom:  2rem;
+    }
+
+
+    .register-logo {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1.5rem;
+      background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px hsl(var(--primary) / 0.3);
+     }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 1.25rem;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom:  0.5rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: hsl(var(--foreground));
+    }
+
+    .input-group input {
+      width:  100%;
+      padding: 0.875rem 1rem;
+      padding-left: 3rem;
+      border: 2px solid hsl(var(--border));
+      border-radius: 12px;
+      background-color: hsl(var(--background));
+      color: hsl(var(--foreground));
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: hsl(var(--primary));
+      box-shadow: 0 0 0 4px hsl(var(--primary) / 0.1);
+    }
+
+    .input-group input.input-error {
+      border-color: hsl(0 84% 60%);
+    }
+
+    .input-group input.input-success {
+      border-color: hsl(142 76% 36%);
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      bottom: 0.875rem;
+      color: hsl(var(--muted-foreground));
+      pointer-events: none;
+      transition: color 0.3s ease;
+    }
+
+    .input-group input:focus ~ .input-icon {
+      color: hsl(var(--primary));
+    }
+
+    .password-toggle {
+      position:  absolute;
+      right: 1rem;
+      bottom: 0.875rem;
+      cursor: pointer;
+      color: hsl(var(--muted-foreground));
+      transition: color 0.3s ease;
+      background: none;
+      border:  none;
+      padding: 0;
+    }
+
+    .password-toggle:hover {
+      color: hsl(var(--primary));
+    }
+
+    .password-toggle:focus {
+      outline:  2px solid hsl(var(--primary));
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    .input-row {
+      display:  grid;
+      grid-template-columns: 1fr 1fr;
+      gap:  1rem;
+    }
+
+    .checkbox-group {
+      display:  flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      cursor: pointer;
+      accent-color: hsl(var(--primary));
+      margin-top: 2px;
+    }
+
+    .checkbox-group label {
+      cursor: pointer;
+      user-select: none;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      color:  hsl(var(--muted-foreground));
+    }
+
+    .checkbox-group label a {
+      color:  hsl(var(--primary));
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .checkbox-group label a:hover {
+      text-decoration: underline;
+    }
+
+    .submit-btn {
+      width:  100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+      color: white;
+      font-weight: 600;
+      font-size:  1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px hsl(var(--primary) / 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px hsl(var(--primary) / 0.4);
+    }
+
+    .submit-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.7;
+      cursor:  not-allowed;
+    }
+
+    .submit-btn:focus {
+      outline:  2px solid hsl(var(--primary));
+      outline-offset: 2px;
+    }
+
+    .divider {
+      position: relative;
+      text-align: center;
+      margin: 2rem 0;
+    }
+
+    .divider::before {
+      content:  '';
+      position:  absolute;
+      top: 50%;
+      left:  0;
+      right: 0;
+      height: 1px;
+      background: hsl(var(--border));
+    }
+
+    .divider span {
+      position: relative;
+      background: hsl(var(--card));
+      padding: 0 1rem;
+      color: hsl(var(--muted-foreground));
+      font-size: 0.875rem;
+    }
+
+    .social-login {
+      display:  grid;
+      grid-template-columns: 1fr 1fr;
+      gap:  1rem;
+      margin-bottom: 2rem;
+    }
+
+    .social-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.875rem;
+      border: 2px solid hsl(var(--border));
+      border-radius: 12px;
+      background:  hsl(var(--background));
+      color: hsl(var(--foreground));
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .social-btn:hover {
+      border-color: hsl(var(--primary));
+      background: hsl(var(--primary) / 0.05);
+    }
+
+    .social-btn:focus {
+      outline: 2px solid hsl(var(--primary));
+      outline-offset:  2px;
+    }
+
+    .social-btn:disabled {
+      opacity:  0.7;
+      cursor: not-allowed;
+    }
+
+    .signin-link {
+      text-align: center;
+      color: hsl(var(--muted-foreground));
+      font-size: 0.875rem;
+    }
+
+    .signin-link a {
+      color: hsl(var(--primary));
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .signin-link a:hover {
+      opacity: 0.8;
+      text-decoration: underline;
+    }
+
+    .signin-link a:focus {
+      outline: 2px solid hsl(var(--primary));
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    .benefits-grid {
+      display:  grid;
+      grid-template-columns:  repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid hsl(var(--border));
+    }
+
+    .benefit-item {
+      display:  flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .benefit-icon {
+      width:  40px;
+      height: 40px;
+      min-width: 40px;
+      background: hsl(var(--primary) / 0.1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .benefit-text {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color:  hsl(var(--muted-foreground));
+    }
+
+    .alert-message {
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      display: none;
+      animation: fadeInUp 0.3s ease;
+    }
+
+    .alert-success {
+      background:  hsl(142 76% 36% / 0.1);
+      border: 1px solid hsl(142 76% 36% / 0.3);
+      color: hsl(142 76% 36%);
+    }
+
+    .alert-error {
+      background:  hsl(0 84% 60% / 0.1);
+      border: 1px solid hsl(0 84% 60% / 0.3);
+      color: hsl(0 84% 60%);
+    }
+
+    .input-hint {
+      font-size: 0.75rem;
+      color: hsl(var(--muted-foreground));
+      margin-top: 0.25rem;
+    }
+
+    .input-hint.error {
+      color: hsl(0 84% 60%);
+    }
+
+    .input-hint.success {
+      color: hsl(142 76% 36%);
+    }
+
+    .password-strength {
+      margin-top: 0.5rem;
+    }
+
+    .strength-bar {
+      height: 4px;
+      background: hsl(var(--border));
+      border-radius: 2px;
+      overflow:  hidden;
+      margin-bottom: 0.25rem;
+    }
+
+    .strength-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .strength-fill.weak {
+      width: 25%;
+      background: hsl(0 84% 60%);
+    }
+
+    .strength-fill.fair {
+      width:  50%;
+      background: hsl(38 92% 50%);
+    }
+
+    .strength-fill.good {
+      width: 75%;
+      background:  hsl(48 96% 53%);
+    }
+
+    .strength-fill.strong {
+      width:  100%;
+      background: hsl(142 76% 36%);
+    }
+
+    .strength-text {
+      font-size: 0.75rem;
+      color: hsl(var(--muted-foreground));
+    }
+
+    @media (max-width:  640px) {
+      .input-row {
+        grid-template-columns:  1fr;
+      }
+
+      .benefits-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .social-login {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="nav-container"></div>
+
+  <main class="register-container" role="main">
+    <div class="register-card">
+      <div class="card shadow-2xl animate-scale-in">
+        <div class="card-content" style="padding: 2.5rem;">
+          <!-- Header -->
+          <header class="register-header">
+            <div class="register-logo" id="logo-container" aria-hidden="true"></div>
+            <h1 class="text-3xl font-bold mb-2">Create Your Account</h1>
+            <p class="text-muted-foreground">Join Care Link and start your health journey today</p>
+          </header>
+
+          <!-- Alert Message -->
+          <div id="alert-message" class="alert-message" role="alert" aria-live="polite"></div>
+
+          <!-- Registration Form -->
+          <form id="registerForm" novalidate>
+            <!-- Name Fields -->
+            <div class="input-row">
+              <div class="input-group">
+                <label for="firstName">First Name</label>
+                <input 
+                  type="text" 
+                  id="firstName" 
+                  name="firstName"
+                  placeholder="John" 
+                  required
+                  autocomplete="given-name"
+                  aria-describedby="firstName-hint"
+                >
+                <span class="input-icon" id="firstName-icon" aria-hidden="true"></span>
+                <div id="firstName-hint" class="input-hint"></div>
+              </div>
+
+              <div class="input-group">
+                <label for="lastName">Last Name</label>
+                <input 
+                  type="text" 
+                  id="lastName" 
+                  name="lastName"
+                  placeholder="Doe" 
+                  required
+                  autocomplete="family-name"
+                  aria-describedby="lastName-hint"
+                >
+                <span class="input-icon" id="lastName-icon" aria-hidden="true"></span>
+                <div id="lastName-hint" class="input-hint"></div>
+              </div>
+            </div>
+
+            <!-- Email Field -->
+            <div class="input-group">
+              <label for="email">Email Address</label>
+              <input 
+                type="email" 
+                id="email" 
+                name="email"
+                placeholder="your.email@example.com" 
+                required
+                autocomplete="email"
+                aria-describedby="email-hint"
+              >
+              <span class="input-icon" id="email-icon" aria-hidden="true"></span>
+              <div id="email-hint" class="input-hint"></div>
+            </div>
+
+            <!-- Phone Field (Optional) -->
+            <div class="input-group">
+              <label for="phone">Phone Number <span style="font-weight: 400; color: hsl(var(--muted-foreground));">(Optional)</span></label>
+              <input 
+                type="tel" 
+                id="phone" 
+                name="phone"
+                placeholder="+91 1234567890" 
+                autocomplete="tel"
+                aria-describedby="phone-hint"
+              >
+              <span class="input-icon" id="phone-icon" aria-hidden="true"></span>
+              <div id="phone-hint" class="input-hint"></div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="input-group">
+              <label for="password">Password</label>
+              <input 
+                type="password" 
+                id="password" 
+                name="password"
+                placeholder="Create a strong password" 
+                required
+                autocomplete="new-password"
+                aria-describedby="password-hint"
+              >
+              <span class="input-icon" id="password-icon" aria-hidden="true"></span>
+              <button 
+                type="button" 
+                class="password-toggle" 
+                id="password-toggle"
+                aria-label="Toggle password visibility"
+              ></button>
+              <div class="password-strength" id="password-strength">
+                <div class="strength-bar">
+                  <div class="strength-fill" id="strength-fill"></div>
+                </div>
+                <div class="strength-text" id="strength-text"></div>
+              </div>
+              <div id="password-hint" class="input-hint"></div>
+            </div>
+
+            <!-- Confirm Password Field -->
+            <div class="input-group">
+              <label for="confirmPassword">Confirm Password</label>
+              <input 
+                type="password" 
+                id="confirmPassword" 
+                name="confirmPassword"
+                placeholder="Confirm your password" 
+                required
+                autocomplete="new-password"
+                aria-describedby="confirmPassword-hint"
+              >
+              <span class="input-icon" id="confirmPassword-icon" aria-hidden="true"></span>
+              <button 
+                type="button" 
+                class="password-toggle" 
+                id="confirmPassword-toggle"
+                aria-label="Toggle confirm password visibility"
+              ></button>
+              <div id="confirmPassword-hint" class="input-hint"></div>
+            </div>
+
+            <!-- Terms & Conditions -->
+            <div class="checkbox-group">
+              <input type="checkbox" id="terms" name="terms" required>
+              <label for="terms">
+                I agree to the <a href="#" id="terms-link">Terms of Service</a> and 
+                <a href="#" id="privacy-link">Privacy Policy</a>
+              </label>
+            </div>
+
+            <!-- Marketing Opt-in -->
+            <div class="checkbox-group">
+              <input type="checkbox" id="newsletter" name="newsletter">
+              <label for="newsletter">
+                Send me health tips, product updates, and promotional offers
+              </label>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submit-btn">
+              <span id="btn-text">Create Account</span>
+              <svg id="btn-spinner" class="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+                <path d="M12 2a10 10 0 0 1 10 10" stroke-opacity="0.75"></path>
+              </svg>
+            </button>
+          </form>
+
+          <!-- Divider -->
+          <div class="divider" role="separator">
+            <span>Or sign up with</span>
+          </div>
+
+          <!-- Social Login -->
+          <div class="social-login">
+            <button type="button" class="social-btn" id="google-btn" aria-label="Sign up with Google">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M22. 56 12.25c0-.78-. 07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98. 66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22. 81-. 62z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+              </svg>
+              Google
+            </button>
+            <button type="button" class="social-btn" id="github-btn" aria-label="Sign up with GitHub">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-. 008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-. 608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+              </svg>
+              GitHub
+            </button>
+          </div>
+
+          <!-- Sign In Link -->
+          <p class="signin-link">
+            Already have an account? <a href="sign-in-care-link. html" id="signin-link">Sign in here</a>
+          </p>
+
+          <!-- Benefits -->
+          <div class="benefits-grid" aria-label="Account benefits">
+            <div class="benefit-item">
+              <div class="benefit-icon" id="benefit-icon-1" aria-hidden="true"></div>
+              <div class="benefit-text">Free health tracking</div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon" id="benefit-icon-2" aria-hidden="true"></div>
+              <div class="benefit-text">AI health insights</div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon" id="benefit-icon-3" aria-hidden="true"></div>
+              <div class="benefit-text">Secure data storage</div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon" id="benefit-icon-4" aria-hidden="true"></div>
+              <div class="benefit-text">24/7 support access</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/icons.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Initialize Supabase
+      let supabaseInitialized = false;
+      try {
+        supabaseInitialized = typeof initSupabase === 'function' && initSupabase();
+      } catch (error) {
+        console.warn('Supabase initialization failed:', error);
+      }
+      
+      // Check if user is already logged in
+      if (supabaseInitialized && typeof SupabaseAuth !== 'undefined') {
+        try {
+          const session = await SupabaseAuth.getSession();
+          if (session) {
+            window.location.href = 'index.html';
+            return;
+          }
+        } catch (error) {
+          console.warn('Session check failed:', error);
+        }
+      }
+
+      // Inject icons (with fallbacks)
+      const injectIcon = (elementId, iconName, className, fallback = '') => {
+        const element = document.getElementById(elementId);
+        if (element && typeof Icons !== 'undefined' && Icons. getHTML) {
+          element.innerHTML = Icons.getHTML(iconName, className, fallback);
+        }
+      };
+
+      injectIcon('logo-container', 'userPlus', 'icon-xl', 'white');
+      injectIcon('firstName-icon', 'user', 'icon');
+      injectIcon('lastName-icon', 'user', 'icon');
+      injectIcon('email-icon', 'mail', 'icon');
+      injectIcon('phone-icon', 'phone', 'icon');
+      injectIcon('password-icon', 'lock', 'icon');
+      injectIcon('confirmPassword-icon', 'lock', 'icon');
+      injectIcon('password-toggle', 'eye', 'icon');
+      injectIcon('confirmPassword-toggle', 'eye', 'icon');
+      injectIcon('benefit-icon-1', 'heart', 'icon text-primary');
+      injectIcon('benefit-icon-2', 'cpu', 'icon text-primary');
+      injectIcon('benefit-icon-3', 'shield', 'icon text-primary');
+      injectIcon('benefit-icon-4', 'clock', 'icon text-primary');
+
+      // DOM Elements
+      const registerForm = document.getElementById('registerForm');
+      const submitBtn = document.getElementById('submit-btn');
+      const btnText = document.getElementById('btn-text');
+      const btnSpinner = document. getElementById('btn-spinner');
+      
+      const firstNameInput = document.getElementById('firstName');
+      const lastNameInput = document.getElementById('lastName');
+      const emailInput = document.getElementById('email');
+      const phoneInput = document.getElementById('phone');
+      const passwordInput = document. getElementById('password');
+      const confirmPasswordInput = document.getElementById('confirmPassword');
+      const termsCheckbox = document.getElementById('terms');
+
+      // Password toggle functionality
+      const setupPasswordToggle = (inputId, toggleId) => {
+        const input = document.getElementById(inputId);
+        const toggle = document.getElementById(toggleId);
+        let visible = false;
+
+        toggle.addEventListener('click', () => {
+          visible = !visible;
+          input. type = visible ? 'text' : 'password';
+          toggle.setAttribute('aria-label', visible ? 'Hide password' : 'Show password');
+          if (typeof Icons !== 'undefined' && Icons.getHTML) {
+            toggle.innerHTML = Icons.getHTML(visible ? 'eyeOff' : 'eye', 'icon');
+          }
+        });
+      };
+
+      setupPasswordToggle('password', 'password-toggle');
+      setupPasswordToggle('confirmPassword', 'confirmPassword-toggle');
+
+      // Show alert message
+      function showAlert(message, type = 'error') {
+        const alertEl = document.getElementById('alert-message');
+        alertEl.textContent = message;
+        alertEl.className = `alert-message alert-${type}`;
+        alertEl. style.display = 'block';
+        
+        // Scroll to alert
+        alertEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+          alertEl.style.display = 'none';
+        }, 5000);
+      }
+
+      // Validation functions
+      function validateName(name) {
+        return name.trim().length >= 2;
+      }
+
+      function validateEmail(email) {
+        const re = /^[a-zA-Z0-9.! #$%&'*+/=? ^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+        return re.test(email. toLowerCase().trim());
+      }
+
+      function validatePhone(phone) {
+        if (!phone.trim()) return true; // Optional field
+        // Accept any 10-digit number (with optional spaces, dashes, or parentheses)
+        const re = /^\d{10}$/;
+        // Remove all non-digit characters for validation
+        const digitsOnly = phone.replace(/\D/g, '');
+        return re.test(digitsOnly);
+      }
+
+      function validatePassword(password) {
+        return password.length >= 8;
+      }
+
+      function validatePasswordMatch(password, confirmPassword) {
+        return password === confirmPassword;
+      }
+
+      // Password strength checker
+      function checkPasswordStrength(password) {
+        let strength = 0;
+        
+        if (password. length >= 8) strength++;
+        if (password.length >= 12) strength++;
+        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+        if (/\d/.test(password)) strength++;
+        if (/[^a-zA-Z0-9]/. test(password)) strength++;
+
+        const strengthFill = document.getElementById('strength-fill');
+        const strengthText = document. getElementById('strength-text');
+
+        strengthFill. className = 'strength-fill';
+        
+        if (password.length === 0) {
+          strengthFill.style.width = '0%';
+          strengthText. textContent = '';
+        } else if (strength <= 1) {
+          strengthFill.classList.add('weak');
+          strengthText.textContent = 'Weak - Add more characters';
+        } else if (strength === 2) {
+          strengthFill. classList.add('fair');
+          strengthText.textContent = 'Fair - Try adding numbers or symbols';
+        } else if (strength === 3) {
+          strengthFill. classList.add('good');
+          strengthText.textContent = 'Good - Almost there!';
+        } else {
+          strengthFill.classList. add('strong');
+          strengthText.textContent = 'Strong - Great password!';
+        }
+
+        return strength;
+      }
+
+      // Real-time validation
+      const setupValidation = (input, hintId, validateFn, errorMessage) => {
+        const hint = document. getElementById(hintId);
+        
+        input.addEventListener('blur', () => {
+          const value = input.value;
+          if (value && ! validateFn(value)) {
+            input.classList.add('input-error');
+            input.classList.remove('input-success');
+            hint.textContent = errorMessage;
+            hint.classList.add('error');
+            hint.classList.remove('success');
+          } else if (value) {
+            input. classList.remove('input-error');
+            input.classList.add('input-success');
+            hint.textContent = '';
+            hint.classList.remove('error');
+          }
+        });
+
+        input.addEventListener('input', () => {
+          input.classList.remove('input-error', 'input-success');
+          hint.textContent = '';
+          hint.classList.remove('error', 'success');
+        });
+      };
+
+      setupValidation(firstNameInput, 'firstName-hint', validateName, 'First name must be at least 2 characters');
+      setupValidation(lastNameInput, 'lastName-hint', validateName, 'Last name must be at least 2 characters');
+      setupValidation(emailInput, 'email-hint', validateEmail, 'Please enter a valid email address');
+      setupValidation(phoneInput, 'phone-hint', validatePhone, 'Please enter a valid 10-digit phone number');
+
+      // Password validation with strength meter
+      passwordInput.addEventListener('input', () => {
+        checkPasswordStrength(passwordInput.value);
+        passwordInput.classList.remove('input-error', 'input-success');
+        document.getElementById('password-hint').textContent = '';
+      });
+
+      passwordInput.addEventListener('blur', () => {
+        const hint = document.getElementById('password-hint');
+        if (passwordInput.value && !validatePassword(passwordInput.value)) {
+          passwordInput.classList.add('input-error');
+          passwordInput. classList.remove('input-success');
+          hint.textContent = 'Password must be at least 8 characters';
+          hint.classList.add('error');
+        } else if (passwordInput.value) {
+          passwordInput. classList.remove('input-error');
+          passwordInput.classList. add('input-success');
+          hint.textContent = '';
+          hint.classList. remove('error');
+        }
+      });
+
+      // Confirm password validation
+      confirmPasswordInput. addEventListener('blur', () => {
+        const hint = document.getElementById('confirmPassword-hint');
+        if (confirmPasswordInput.value && !validatePasswordMatch(passwordInput.value, confirmPasswordInput.value)) {
+          confirmPasswordInput.classList.add('input-error');
+          confirmPasswordInput.classList.remove('input-success');
+          hint.textContent = 'Passwords do not match';
+          hint.classList. add('error');
+        } else if (confirmPasswordInput.value) {
+          confirmPasswordInput.classList. remove('input-error');
+          confirmPasswordInput.classList.add('input-success');
+          hint.textContent = 'Passwords match! ';
+          hint. classList.add('success');
+        }
+      });
+
+      confirmPasswordInput.addEventListener('input', () => {
+        confirmPasswordInput.classList.remove('input-error', 'input-success');
+        document.getElementById('confirmPassword-hint').textContent = '';
+      });
+
+      // Set loading state
+      function setLoading(isLoading) {
+        submitBtn.disabled = isLoading;
+        btnText.style.display = isLoading ?  'none' :  'inline';
+        btnSpinner.style.display = isLoading ? 'inline-block' : 'none';
+      }
+
+      // Form submission
+      registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const firstName = firstNameInput. value.trim();
+        const lastName = lastNameInput.value. trim();
+        const email = emailInput. value.trim();
+        const phone = phoneInput.value.trim();
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput. value;
+        const termsAccepted = termsCheckbox.checked;
+        const newsletter = document.getElementById('newsletter').checked;
+
+        // Validation
+        if (!validateName(firstName)) {
+          showAlert('Please enter a valid first name (at least 2 characters)', 'error');
+          firstNameInput.focus();
+          return;
+        }
+
+        if (!validateName(lastName)) {
+          showAlert('Please enter a valid last name (at least 2 characters)', 'error');
+          lastNameInput.focus();
+          return;
+        }
+
+        if (!validateEmail(email)) {
+          showAlert('Please enter a valid email address', 'error');
+          emailInput.focus();
+          return;
+        }
+
+        if (phone && !validatePhone(phone)) {
+          showAlert('Please enter a valid phone number', 'error');
+          phoneInput.focus();
+          return;
+        }
+
+        if (!validatePassword(password)) {
+          showAlert('Password must be at least 8 characters long', 'error');
+          passwordInput. focus();
+          return;
+        }
+
+        if (! validatePasswordMatch(password, confirmPassword)) {
+          showAlert('Passwords do not match', 'error');
+          confirmPasswordInput.focus();
+          return;
+        }
+
+        if (! termsAccepted) {
+          showAlert('Please accept the Terms of Service and Privacy Policy', 'error');
+          termsCheckbox.focus();
+          return;
+        }
+
+        // Show loading state
+        setLoading(true);
+
+        try {
+          // Check if Supabase is configured
+          if (!supabaseInitialized || typeof SUPABASE_CONFIG === 'undefined' || SUPABASE_CONFIG.url === 'YOUR_SUPABASE_URL') {
+            throw new Error('Supabase not configured.  Please update SUPABASE_CONFIG in supabase-client.js');
+          }
+
+          // Prepare user metadata
+          const metadata = {
+            first_name: firstName,
+            last_name: lastName,
+            full_name: `${firstName} ${lastName}`,
+            phone: phone || null,
+            newsletter_subscribed: newsletter
+          };
+
+          // Attempt sign up
+          const { user, session } = await SupabaseAuth.signUp(email, password, metadata);
+
+          showAlert('Account created successfully!  Please check your email to verify your account.', 'success');
+          
+          // Redirect after short delay
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 2000);
+
+        } catch (error) {
+          console.error('Registration error:', error);
+          
+          let errorMessage = 'Registration failed. ';
+          
+          if (error.message. includes('already registered')) {
+            errorMessage += 'This email is already registered.  Please sign in or use a different email.';
+          } else if (error.message. includes('invalid')) {
+            errorMessage += 'Please check your information and try again.';
+          } else if (error.message. includes('not configured')) {
+            errorMessage = error.message + '. You can still explore features without signing up.';
+          } else {
+            errorMessage += error.message || 'Please try again. ';
+          }
+          
+          showAlert(errorMessage, 'error');
+        } finally {
+          setLoading(false);
+        }
+      });
+
+      // Google sign-up handler
+      document.getElementById('google-btn').addEventListener('click', async () => {
+        try {
+          if (!supabaseInitialized || typeof SUPABASE_CONFIG === 'undefined' || SUPABASE_CONFIG.url === 'YOUR_SUPABASE_URL') {
+            showAlert('Supabase not configured. Please update SUPABASE_CONFIG in supabase-client.js', 'error');
+            return;
+          }
+
+          await SupabaseAuth.signInWithGoogle();
+          // Redirect will be handled by OAuth flow
+        } catch (error) {
+          console.error('Google sign-up error:', error);
+          showAlert('Google sign-up failed:  ' + error.message, 'error');
+        }
+      });
+
+      // GitHub sign-up handler
+      document.getElementById('github-btn').addEventListener('click', async () => {
+        try {
+          if (! supabaseInitialized || typeof SUPABASE_CONFIG === 'undefined' || SUPABASE_CONFIG.url === 'YOUR_SUPABASE_URL') {
+            showAlert('Supabase not configured. Please update SUPABASE_CONFIG in supabase-client.js', 'error');
+            return;
+          }
+
+          await SupabaseAuth. signInWithGithub();
+          // Redirect will be handled by OAuth flow
+        } catch (error) {
+          console. error('GitHub sign-up error:', error);
+          showAlert('GitHub sign-up failed: ' + error. message, 'error');
+        }
+      });
+
+      // Auto-focus first name input
+      firstNameInput. focus();
+    });
+  </script>
+</body>
+</html>

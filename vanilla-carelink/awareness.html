@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Awareness Hub - Care Link</title>
+  <meta name="description" content="Learn essential health practices and wellness tips to improve your quality of life">
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Supabase Client Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  
+  <!-- Navigation will be inserted by JavaScript -->
+
+  <!-- Hero Section -->
+  <div class="hero" style="height: 18rem;">
+    <img src="images/awareness-bg.jpg" alt="Health awareness" class="hero-image">
+    <div style="position: absolute; inset: 0; background: linear-gradient(to right, hsl(var(--secondary) / 0.8), hsl(var(--secondary) / 0.6)); display: flex; align-items: center; justify-content: center;">
+      <div class="text-center px-4">
+        <svg height="100px" width="100px" class="icon-xl text-primary animate-float mx-auto mb-4" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path style="fill:#A66342;" d="M507.548,78.024C475.27,43.409,423.625,21.927,372.87,21.927c-43.075,0-84.814,16.028-116.87,44.299 c-32.056-28.271-73.795-44.299-116.87-44.299c-50.756,0-102.4,21.482-134.678,56.097C1.558,81.03,0,85.148,0,89.377v384 c0,15.026,18.587,22.483,28.939,11.353c25.71-27.603,69.01-45.412,110.191-45.412c39.513,0,77.69,16.584,104.626,45.412 c3.338,3.562,7.791,5.343,12.243,5.231c4.562,0,9.017-1.781,12.243-5.231c26.936-28.828,65.113-45.412,104.626-45.412 c41.183,0,84.481,17.809,110.191,45.412c10.352,11.02,28.939,3.784,28.939-11.353v-384C512,85.148,510.442,81.03,507.548,78.024z"></path> <path style="fill:#995B3D;" d="M512,89.377v384c0,15.137-18.587,22.372-28.939,11.353c-25.71-27.603-69.01-45.412-110.191-45.412 c-39.513,0-77.69,16.584-104.626,45.412c-3.227,3.45-7.681,5.231-12.243,5.231V66.226c32.056-28.271,73.795-44.299,116.87-44.299 c50.756,0,102.4,21.482,134.678,56.097C510.442,81.03,512,85.148,512,89.377z"></path> <path style="fill:#E6EEFF;" d="M372.87,55.29c-37.444,0-90.224,15.015-116.87,41.146v-0.265 C229.358,70.117,176.522,55.29,139.13,55.29c-38.87,0-79.598,15.908-105.739,40.934v341.478 c30.294-20.076,68.25-31.804,105.739-31.804c35.923,0,87.62,11.104,116.87,31.206v0.1c29.255-20.125,80.927-31.307,116.87-31.307 c37.49,0,75.445,11.728,105.739,31.804V96.225C452.468,71.198,411.739,55.29,372.87,55.29z"></path> <path style="fill:#DAE2F2;" d="M478.609,437.703V96.225C452.468,71.198,411.739,55.29,372.87,55.29 c-37.444,0-90.224,15.015-116.87,41.146v340.67v0.1c29.255-20.125,80.927-31.307,116.87-31.307 C410.359,405.899,448.315,417.627,478.609,437.703z"></path> <g> <path style="fill:#A1A7B3;" d="M189.217,157.287H89.043c-9.217-1.128-16.696-8.6-16.696-17.823s7.479-16.696,16.696-16.696h100.174 c9.217,0,16.696,7.473,16.696,16.696C205.913,148.687,198.435,156.16,189.217,157.287z"></path> <path style="fill:#A1A7B3;" d="M189.217,224.07H89.043c-9.217,0-16.696-7.473-16.696-16.696s7.479-16.696,16.696-16.696h100.174 c9.217,0,16.696,7.473,16.696,16.696S198.435,224.07,189.217,224.07z"></path> <path style="fill:#A1A7B3;" d="M189.217,290.853H89.043c-9.217,0-16.696-7.473-16.696-16.696c0-9.223,7.479-16.696,16.696-16.696 h100.174c9.217,0,16.696,7.473,16.696,16.696C205.913,283.38,198.435,290.853,189.217,290.853z"></path> <path style="fill:#A1A7B3;" d="M189.217,356.508H89.043c-9.217,0-16.696-7.473-16.696-16.696s7.479-16.696,16.696-16.696h100.174 c9.217,0,16.696,7.473,16.696,16.696S198.435,356.508,189.217,356.508z"></path> </g> <g> <path style="fill:#979CA7;" d="M422.957,156.16H322.783c-9.217,0-16.696-7.473-16.696-16.696s7.479-16.696,16.696-16.696h100.174 c9.217,0,16.696,7.473,16.696,16.696C439.652,148.687,432.174,156.16,422.957,156.16z"></path> <path style="fill:#979CA7;" d="M422.957,222.943H322.783c-9.217,0-16.696-7.473-16.696-16.696s7.479-16.696,16.696-16.696h100.174 c9.217,0,16.696,7.473,16.696,16.696S432.174,222.943,422.957,222.943z"></path> <path style="fill:#979CA7;" d="M422.957,289.725H322.783c-9.217,0-16.696-7.473-16.696-16.696c0-9.223,7.479-16.696,16.696-16.696 h100.174c9.217,0,16.696,7.473,16.696,16.696C439.652,282.252,432.174,289.725,422.957,289.725z"></path> <path style="fill:#979CA7;" d="M422.957,356.508H322.783c-9.217,0-16.696-7.473-16.696-16.696s7.479-16.696,16.696-16.696h100.174 c9.217,0,16.696,7.473,16.696,16.696S432.174,356.508,422.957,356.508z"></path> </g> </g></svg>    
+        <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: hsl(var(--secondary-foreground));">Health Awareness Hub</h1>
+        <p class="text-xl" style="color: hsl(var(--secondary-foreground) / 0.9);">Knowledge for a healthier life</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container py-12">
+    <div class="max-w-6xl mx-auto">
+      <p class="text-center text-lg text-muted-foreground mb-12 animate-fade-in-up">
+        Small daily habits can make a big difference in your health and wellbeing. 
+        Learn essential health practices to improve your quality of life.
+      </p>
+
+      <!-- Did You Know Section -->
+      <div class="mb-12 p-6 rounded-lg animate-scale-in" style="background: linear-gradient(to right, hsl(var(--primary) / 0.1), hsl(var(--primary) / 0.05)); border: 1px solid hsl(var(--primary) / 0.2);">
+        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+          <svg class="icon text-primary" viewBox="0 0 24 24">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          Did You Know?
+        </h2>
+        <div class="grid md:grid-cols-2 gap-3" id="didYouKnowGrid"></div>
+      </div>
+
+      <!-- Topics Grid -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12" id="topicsGrid"></div>
+
+      <!-- Additional Resources -->
+      <div class="grid md:grid-cols-2 gap-6 mb-12">
+        <div class="card animate-fade-in">
+          <div class="card-header">
+            <h3 class="card-title flex items-center gap-2">
+              <svg class="icon text-primary" viewBox="0 0 24 24">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+              Vaccination Schedule
+            </h3>
+          </div>
+          <div class="card-content text-sm text-muted-foreground space-y-2">
+            <p>Stay protected with timely vaccinations:</p>
+            <ul style="margin-left: 1rem; margin-top: 0.5rem;">
+              <li>• Annual flu vaccine (recommended for everyone)</li>
+              <li>• COVID-19 vaccine and boosters</li>
+              <li>• Tetanus booster every 10 years</li>
+              <li>• Age-specific vaccines (consult your doctor)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card animate-fade-in delay-100">
+          <div class="card-header">
+            <h3 class="card-title flex items-center gap-2">
+              <svg class="icon text-primary" viewBox="0 0 24 24">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+              Emergency Preparedness
+            </h3>
+          </div>
+          <div class="card-content text-sm text-muted-foreground space-y-2">
+            <p>Be prepared for health emergencies:</p>
+            <ul style="margin-left: 1rem; margin-top: 0.5rem;">
+              <li>• Keep a first aid kit at home and in your car</li>
+              <li>• Know emergency contact numbers</li>
+              <li>• Learn basic CPR and first aid</li>
+              <li>• Maintain a list of your medications and allergies</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="p-8 rounded-lg text-center animate-scale-in" style="background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--primary) / 0.8));">
+        <h2 class="text-3xl font-bold mb-4" style="color: hsl(var(--primary-foreground));">
+          Prevention is Better Than Cure
+        </h2>
+        <p class="text-lg mb-4" style="color: hsl(var(--primary-foreground) / 0.9);">
+          By following these simple guidelines, you can significantly reduce your risk 
+          of illness and improve your quality of life.
+        </p>
+        <p class="font-semibold" style="color: hsl(var(--primary-foreground));">
+          Start with small changes today for a healthier tomorrow!
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-section">
+          <h3>Care Link</h3>
+          <p>Your trusted healthcare companion, powered by AI and compassion.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Services</h4>
+          <ul class="footer-links">
+            <li><a href="diagnostics.html">AI Diagnostics</a></li>
+            <li><a href="mental-health.html">Mental Health</a></li>
+            <li><a href="medicines.html">Medicines</a></li>
+            <li><a href="awareness.html">Health Awareness</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Company</h4>
+          <ul class="footer-links">
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Crisis Support</h4>
+          <ul class="footer-links" style="list-style: none;">
+            <li>Suicide Prevention: 1800-233-3330</li>
+            <li>Emergency: 112</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 Care Link. Your trusted healthcare companion.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/icons.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/awareness.js"></script>
+</body>
+</html>
